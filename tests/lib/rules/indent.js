@@ -873,6 +873,15 @@ ruleTester.run("indent", rule, {
         },
         {
             code:
+            "import {\n" +
+            "    foo,\n" +
+            "    bar,\n" +
+            "    baz\n" +
+            "} from 'qux';",
+            parserOptions: { sourceType: "module" }
+        },
+        {
+            code:
             "var a = 1,\n" +
             "    b = 2,\n" +
             "    c = 3;\n",
@@ -4092,6 +4101,22 @@ ruleTester.run("indent", rule, {
             options: [2],
             parserOptions: {ecmaVersion: 6},
             errors: expectedErrors([[2, 2, 0, "Identifier"], [4, 2, 4, "Identifier"], [5, 2, 6, "Identifier"], [6, 0, 2, "Punctuator"]])
+        },
+        {
+            code:
+            "import {\n" +
+            "foo,\n" +
+            "  bar,\n" +
+            "    baz\n" +
+            "} from 'qux';",
+            output:
+            "import {\n" +
+            "    foo,\n" +
+            "    bar,\n" +
+            "    baz\n" +
+            "} from 'qux';",
+            parserOptions: { sourceType: "module" },
+            errors: expectedErrors([[1, 4, 0, "Identifier"], [2, 4, 2, "Identifier"]])
         },
         {
 
