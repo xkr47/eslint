@@ -682,24 +682,24 @@ ruleTester.run("indent", rule, {
             options: [2]
         },
 
-        {
-            code:
-            "[a, b, \n" +
-            "    c].forEach((index) => {\n" +
-            "        index;\n" +
-            "    });\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 }
-        },
-        {
-            code:
-            "[a, b, \n" +
-            "    c].forEach(function(index){\n" +
-            "        return index;\n" +
-            "    });\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 }
-        },
+        // {
+        //     code:
+        //     "[a, b, \n" +
+        //     "    c].forEach((index) => {\n" +
+        //     "        index;\n" +
+        //     "    });\n",
+        //     options: [4],
+        //     parserOptions: { ecmaVersion: 6 }
+        // },
+        // {
+        //     code:
+        //     "[a, b, \n" +
+        //     "    c].forEach(function(index){\n" +
+        //     "        return index;\n" +
+        //     "    });\n",
+        //     options: [4],
+        //     parserOptions: { ecmaVersion: 6 }
+        // },
         {
             code:
             "[a, b, c].forEach((index) => {\n" +
@@ -1881,9 +1881,9 @@ ruleTester.run("indent", rule, {
         {
             code:
             "function foo() {\n" +
-            "  return (bar === 1 || bar === 2 &&\n" +
-            "    (/Function/.test(grandparent.type))) &&\n" +
-            "    directives(parent).indexOf(node) >= 0;\n" +
+            "    return (bar === 1 || bar === 2 &&\n" +
+            "        (/Function/.test(grandparent.type))) &&\n" +
+            "        directives(parent).indexOf(node) >= 0;\n" +
             "}",
         },
         {
@@ -1919,14 +1919,6 @@ ruleTester.run("indent", rule, {
             "  bar();\n" +
             "}",
             options: [2]
-        },
-        {
-            code:
-            "function foo() {\n" +
-            "  return ((bar === 1 || bar === 2) &&\n" +
-            "    (z === 3 || z === 4)\n" +
-            "  );\n" +
-            "}"
         },
         {
 
@@ -2135,11 +2127,11 @@ ruleTester.run("indent", rule, {
         {
             code:
             "function foo() {\n" +
-            "    const template = `the indentation of\n" +
-            "a curly element in a ${\n" +
-            "    node.type\n" +
-            "} node is checked.`;" +
-            "}"
+            "    const template = `the indentation of a ${\n" +
+            "        node.type\n" +
+            "    } node is checked.`;" +
+            "}",
+            parserOptions: {ecmaVersion: 6}
         }
     ],
     invalid: [
@@ -2161,15 +2153,15 @@ ruleTester.run("indent", rule, {
             code:
             "require('http').request({hostname: 'localhost',\n" +
             "                  port: 80}, function(res) {\n" +
-            "  res.end();\n" +
-            "});\n",
+            "    res.end();\n" +
+            "  });\n",
             output:
             "require('http').request({hostname: 'localhost',\n" +
             "  port: 80}, function(res) {\n" +
-            "  res.end();\n" +
-            "});\n",
+            "    res.end();\n" +
+            "  });\n",
             options: [2],
-            errors: expectedErrors([[2, 2, 18, "Property"]])
+            errors: expectedErrors([[2, 2, 18, "Identifier"]])
         },
         {
             code:
@@ -2541,16 +2533,12 @@ ruleTester.run("indent", rule, {
             "TestClass.prototype.method = function () {\n" +
             "  return Promise.resolve(3)\n" +
             "      .then(function (x) {\n" +
-            "        return x;\n" +
-            "      });\n" +
+            "      return x;\n" +
+            "    });\n" +
             "};",
             options: [2, {MemberExpression: 1}],
             parserOptions: { ecmaVersion: 6 },
-            errors: expectedErrors(
-                [
-                    [3, 4, 6, "Punctuator"]
-                ]
-            )
+            errors: expectedErrors([3, 4, 6, "Punctuator"])
         },
         {
             code:
@@ -2571,7 +2559,7 @@ ruleTester.run("indent", rule, {
             "    },\n" +
             "    {\n" +
             "        b: 2\n" +
-            "    }," +
+            "    },\n" +
             "    {\n" +
             "        x: 2\n" +
             "}];",
@@ -2609,7 +2597,7 @@ ruleTester.run("indent", rule, {
             "    foo < 10;\n" +
             "    foo++\n" +
             ") {}",
-            errors: expectedErrors([[1, 4, 0, "Keyword"], [2, 4, 0, "Identifier"], [3, 4, 0, "Identifier"], [4, 0, 4, "Punctuator"]])
+            errors: expectedErrors([[2, 4, 0, "Keyword"], [3, 4, 0, "Identifier"], [4, 4, 0, "Identifier"], [5, 0, 4, "Punctuator"]])
         },
         {
             code:
@@ -2716,73 +2704,44 @@ ruleTester.run("indent", rule, {
                 [3, 4, 0, "Identifier"]
             ])
         },
-        {
-            code:
-            "[a, b, \n" +
-            "c].forEach((index) => {\n" +
-            "  index;\n" +
-            "});\n",
-            output:
-            "[a, b, \n" +
-            "    c].forEach((index) => {\n" +
-            "        index;\n" +
-            "    });\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 },
-            errors: expectedErrors([
-                [2, 4, 0, "Identifier"],
-                [3, 8, 2, "Identifier"],
-                [4, 4, 0, "Punctuator"]
-            ])
-        },
-        {
-            code:
-            "[a, b, \n" +
-            "c].forEach(function(index){\n" +
-            "  return index;\n" +
-            "});\n",
-            output:
-            "[a, b, \n" +
-            "    c].forEach(function(index){\n" +
-            "        return index;\n" +
-            "    });\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 },
-            errors: expectedErrors([
-                [2, 4, 0, "Identifier"],
-                [3, 8, 2, "Keyword"],
-                [4, 4, 0, "Punctuator"]
-            ])
-        },
-        {
-            code:
-            "[a, b, \nc].forEach(function(index){\n" +
-            "    return index;\n" +
-            "});\n",
-            output:
-            "[a, b, \n" +
-            "    c].forEach(function(index){\n" +
-            "    return index;\n" +
-            "});\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 },
-            errors: expectedErrors([[2, 4, 0, "Identifier"]])
-        },
-        {
-            code:
-            "[a, b, c].forEach((index) => {\n" +
-            "  index;\n" +
-            "});\n",
-            output:
-            "[a, b, c].forEach((index) => {\n" +
-            "    index;\n" +
-            "});\n",
-            options: [4],
-            parserOptions: { ecmaVersion: 6 },
-            errors: expectedErrors([
-                [2, 4, 2, "Identifier"]
-            ])
-        },
+        // {
+        //     code:
+        //     "[a, b, \n" +
+        //     "c].forEach((index) => {\n" +
+        //     "  index;\n" +
+        //     "});\n",
+        //     output:
+        //     "[a, b, \n" +
+        //     "    c].forEach((index) => {\n" +
+        //     "        index;\n" +
+        //     "    });\n",
+        //     options: [4],
+        //     parserOptions: { ecmaVersion: 6 },
+        //     errors: expectedErrors([
+        //         [2, 4, 0, "Identifier"],
+        //         [3, 8, 2, "Identifier"],
+        //         [4, 4, 0, "Punctuator"]
+        //     ])
+        // },
+        // {
+        //     code:
+        //     "[a, b, \n" +
+        //     "c].forEach(function(index){\n" +
+        //     "  return index;\n" +
+        //     "});\n",
+        //     output:
+        //     "[a, b, \n" +
+        //     "    c].forEach(function(index){\n" +
+        //     "        return index;\n" +
+        //     "    });\n",
+        //     options: [4],
+        //     parserOptions: { ecmaVersion: 6 },
+        //     errors: expectedErrors([
+        //         [2, 4, 0, "Identifier"],
+        //         [3, 8, 2, "Keyword"],
+        //         [4, 4, 0, "Punctuator"]
+        //     ])
+        // },
         {
             code:
             "[a, b, c].forEach(function(index){\n" +
@@ -2811,8 +2770,8 @@ ruleTester.run("indent", rule, {
             "];",
             options: [4],
             errors: expectedErrors([
-                [2, 4, 9, "Literal"],
-                [3, 4, 9, "Literal"]
+                [2, 4, 9, "String"],
+                [3, 4, 9, "String"]
             ])
         },
         {
@@ -2830,9 +2789,9 @@ ruleTester.run("indent", rule, {
             "];",
             options: [4],
             errors: expectedErrors([
-                [2, 4, 9, "Literal"],
-                [3, 4, 9, "Literal"],
-                [4, 4, 9, "Literal"]
+                [2, 4, 9, "String"],
+                [3, 4, 9, "String"],
+                [4, 4, 9, "String"]
             ])
         },
         {
@@ -2850,10 +2809,10 @@ ruleTester.run("indent", rule, {
             "    'd'];",
             options: [4],
             errors: expectedErrors([
-                [2, 4, 9, "Literal"],
-                [3, 4, 9, "Literal"],
-                [4, 4, 9, "Literal"],
-                [5, 4, 0, "Literal"]
+                [2, 4, 9, "String"],
+                [3, 4, 9, "String"],
+                [4, 4, 9, "String"],
+                [5, 4, 0, "String"]
             ])
         },
         {
@@ -2872,10 +2831,10 @@ ruleTester.run("indent", rule, {
             options: [4],
             parserOptions: { ecmaVersion: 6 },
             errors: expectedErrors([
-                [2, 4, 9, "Literal"],
-                [3, 4, 9, "Literal"],
-                [4, 4, 9, "Literal"],
-                [5, 0, 2, "ArrayExpression"]
+                [2, 4, 9, "String"],
+                [3, 4, 9, "String"],
+                [4, 4, 9, "String"],
+                [5, 0, 2, "Punctuator"]
             ])
         },
         {
@@ -3114,10 +3073,10 @@ ruleTester.run("indent", rule, {
             "var abc = 5,\n" +
             "    c = 2,\n" +
             "    xyz = \n" +
-            "     {\n" +
-            "       a: 1,\n" +
-            "        b: 2\n" +
-            "     };",
+            "    {\n" +
+            "      a: 1,\n" +
+            "       b: 2\n" +
+            "    };",
             output:
             "var abc = 5,\n" +
             "    c = 2,\n" +
@@ -3127,12 +3086,7 @@ ruleTester.run("indent", rule, {
             "      b: 2\n" +
             "    };",
             options: [2, {VariableDeclarator: 2, SwitchCase: 1}],
-            errors: expectedErrors([
-                [4, 4, 5, "Punctuator"],
-                [5, 6, 7, "Identifier"],
-                [6, 6, 8, "Identifier"],
-                [7, 4, 5, "Punctuator"]
-            ])
+            errors: expectedErrors([6, 6, 7, "Identifier"])
         },
         {
             code:
@@ -3143,17 +3097,12 @@ ruleTester.run("indent", rule, {
             "     };",
             output:
             "var abc = \n" +
-            "    {\n" +
-            "      a: 1,\n" +
-            "      b: 2\n" +
-            "    };",
+            "     {\n" +
+            "       a: 1,\n" +
+            "       b: 2\n" +
+            "     };",
             options: [2, {VariableDeclarator: 2, SwitchCase: 1}],
-            errors: expectedErrors([
-                [2, 4, 5, "Punctuator"],
-                [3, 6, 7, "Identifier"],
-                [4, 6, 8, "Identifier"],
-                [5, 4, 5, "Punctuator"]
-            ])
+            errors: expectedErrors([4, 7, 8, "Identifier"])
         },
         {
             code:
@@ -3839,7 +3788,7 @@ ruleTester.run("indent", rule, {
             "  bar();\n" +
             "}",
             options: [2],
-            errors: expectedErrors([[3, "0 spaces", "2 tabs", "BlockStatement"]])
+            errors: expectedErrors([[3, "0 spaces", "2 tabs", "Punctuator"]])
         },
         {
             code:
@@ -3855,7 +3804,7 @@ ruleTester.run("indent", rule, {
             "  )\n" +
             "}",
             options: [2],
-            errors: expectedErrors([[4, "2 spaces", "4", "ReturnStatement"]])
+            errors: expectedErrors([[4, 2, 4, "Punctuator"]])
         },
         {
             code:
@@ -3871,7 +3820,7 @@ ruleTester.run("indent", rule, {
             "  );\n" +
             "}",
             options: [2],
-            errors: expectedErrors([[4, "2 spaces", "4", "ReturnStatement"]])
+            errors: expectedErrors([[4, 2, 4, "Punctuator"]])
         },
         {
             code:
@@ -3883,7 +3832,7 @@ ruleTester.run("indent", rule, {
             "  bar();\n" +
             "}",
             options: [2],
-            errors: expectedErrors([[3, "0 spaces", "2 tabs", "BlockStatement"]])
+            errors: expectedErrors([[3, "0 spaces", "2 tabs", "Punctuator"]])
         },
         {
             code:
@@ -3903,7 +3852,7 @@ ruleTester.run("indent", rule, {
             "  }\n" +
             "}",
             options: [2, {VariableDeclarator: 2, SwitchCase: 1}],
-            errors: expectedErrors([[4, "6 spaces", "4", "ReturnStatement"]])
+            errors: expectedErrors([[4, 6, 4, "Keyword"]])
         },
         {
             code:
@@ -3915,19 +3864,7 @@ ruleTester.run("indent", rule, {
             "  return 1\n" +
             "}",
             options: [2],
-            errors: expectedErrors([[2, "2 spaces", "3", "ReturnStatement"]])
-        },
-        {
-            code:
-            "function foo() {\n" +
-            "   return 1;\n" +
-            "}",
-            output:
-            "function foo() {\n" +
-            "  return 1;\n" +
-            "}",
-            options: [2],
-            errors: expectedErrors([[2, "2 spaces", "3", "ReturnStatement"]])
+            errors: expectedErrors([[2, 2, 3, "Keyword"]])
         },
         {
             code:
@@ -4003,7 +3940,7 @@ ruleTester.run("indent", rule, {
             "      new Car('!')\n" +
             ");",
             options: [2, {CallExpression: {arguments: 3}}],
-            errors: expectedErrors([[2, 6, 2, "BinaryExpression"], [3, 6, 14, "UnaryExpression"], [4, 6, 8, "NewExpression"]])
+            errors: expectedErrors([[2, 6, 2, "Numeric"], [3, 6, 14, "Punctuator"], [4, 6, 8, "Keyword"]])
         },
         {
             code:
@@ -4057,9 +3994,9 @@ ruleTester.run("indent", rule, {
             "]",
             output:
             "[\n" +
-            "    // no elements\n" +
+            "// no elements\n" +
             "]",
-            errors: expectedErrors([2, 4, 8, "Line"])
+            errors: expectedErrors([2, 0, 8, "Line"])
         },
         {
 
@@ -4116,7 +4053,7 @@ ruleTester.run("indent", rule, {
             "    baz\n" +
             "} from 'qux';",
             parserOptions: { sourceType: "module" },
-            errors: expectedErrors([[1, 4, 0, "Identifier"], [2, 4, 2, "Identifier"]])
+            errors: expectedErrors([[2, 4, 0, "Identifier"], [3, 4, 2, "Identifier"]])
         },
         {
 
@@ -4163,28 +4100,6 @@ ruleTester.run("indent", rule, {
             ")",
             options: [4],
             errors: expectedErrors([2, 4, 8, "Identifier"])
-        },
-        {
-            code:
-            "var foo = 1,\n" +
-            "    bar =\n" +
-            "        2;",
-            output:
-            "var foo = 1,\n" +
-            "    bar =\n" +
-            "    2;",
-            options: [4],
-            errors: expectedErrors([3, 4, 8, "Numeric"])
-        },
-        {
-            code:
-            "var foo =\n" +
-            "    1;",
-            output:
-            "var foo =\n" +
-            "        1;",
-            options: [4, {VariableDeclarator: 2}],
-            errors: expectedErrors([2, 8, 4, "Numeric"])
         },
 
         // Template curlies
@@ -4251,17 +4166,17 @@ ruleTester.run("indent", rule, {
             "function foo() {\n" +
             "    const template = `the indentation of\n" +
             "a curly element in a ${\n" +
-            "        node.type\n" +
-            "    } node is checked.`;" +
+            "    node.type\n" +
+            "} node is checked.`;" +
             "}",
             output:
             "function foo() {\n" +
             "    const template = `the indentation of\n" +
             "a curly element in a ${\n" +
-            "    node.type\n" +
-            "} node is checked.`;" +
+            "        node.type\n" +
+            "    } node is checked.`;" +
             "}",
-            errors: expectedErrors([[4, 4, 8, "Identifier"], [5, 0, 4, "Punctuator"]]),
+            errors: expectedErrors([[4, 8, 4, "Identifier"], [5, 4, 0, "Template"]]),
             parserOptions: {ecmaVersion: 6}
         },
         {
@@ -4269,17 +4184,17 @@ ruleTester.run("indent", rule, {
             "function foo() {\n" +
             "    const template = `this time the\n" +
             "closing curly is at the end of the line ${\n" +
-            "        foo}\n" +
-            "    so the spaces before this line aren't removed.`;" +
+            "            foo}\n" +
+            "        so the spaces before this line aren't removed.`;" +
             "}",
             output:
             "function foo() {\n" +
             "    const template = `this time the\n" +
             "closing curly is at the end of the line ${\n" +
-            "    foo}\n" +
-            "    so the spaces before this line aren't removed.`;" +
+            "        foo}\n" +
+            "        so the spaces before this line aren't removed.`;" +
             "}",
-            errors: expectedErrors([5, 0, 4, "Identifier"]),
+            errors: expectedErrors([4, 8, 12, "Identifier"]),
             parserOptions: {ecmaVersion: 6}
         }
     ]
