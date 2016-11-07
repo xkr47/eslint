@@ -2132,6 +2132,18 @@ ruleTester.run("indent", rule, {
             "    } node is checked.`;" +
             "}",
             parserOptions: {ecmaVersion: 6}
+        },
+        {
+
+            // https://github.com/eslint/eslint/issues/7320
+            code:
+            "JSON\n" +
+            "    .stringify(\n" +
+            "        {\n" +
+            "            test: 'test'\n" +
+            "        }\n" +
+            "    );",
+            options: [4, {CallExpression: {arguments: 1}}]
         }
     ],
     invalid: [
